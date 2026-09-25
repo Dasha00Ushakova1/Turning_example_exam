@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>Turning shop12345678</h1>
+        <h1>Turning shop123456789</h1>
         <nav>
             <ul>
                 <li><a href="#catalog">Каталог</a></li>
@@ -48,10 +48,9 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/sqlite3@5.0.2/dist/sqlite3.min.js"></script>
     <script>
-        const sqlite3 = require('sqlite3').verbose();
         let db = new sqlite3.Database('./db.db', sqlite3.OPEN_READONLY);
-        
-        // Получаем каталог товаров
+
+
         function getCatalog() {
             db.all("SELECT * FROM Products", (err, rows) => {
                 if (err) {
@@ -61,18 +60,13 @@
                 const catalogBody = document.getElementById('catalog-body');
                 rows.forEach((row) => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.Product_Code}</td>
-                        <td>${row.Product_Name}</td>
-                        <td>${row.Price}</td>
-                        <td>${row.Quantity}</td>
-                    `;
+                    tr.innerHTML = ` <td>${row.Product_Code}</td> <td>${row.Product_Name}</td> <td>${row.Price}</td> <td>${row.Quantity}</td> `;
                     catalogBody.appendChild(tr);
                 });
             });
         }
-        
-        // Получаем список заказов
+
+
         function getOrders() {
             db.all("SELECT * FROM Orders", (err, rows) => {
                 if (err) {
@@ -82,19 +76,16 @@
                 const ordersBody = document.getElementById('orders-body');
                 rows.forEach((row) => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.Order_Code}</td>
-                        <td>${row.Customer_Code}</td>
-                        <td>${row.Order_Date}</td>
-                        <td>${row.Total_Cost}</td>
-                    `;
+                    tr.innerHTML = ` <td>${row.Order_Code}</td> <td>${row.Customer_Code}</td> <td>${row.Order_Date}</td> <td>${row.Total_Cost}</td> `;
                     ordersBody.appendChild(tr);
                 });
             });
         }
-        
+
+
         getCatalog();
         getOrders();
+
         db.close();
     </script>
 </body>
