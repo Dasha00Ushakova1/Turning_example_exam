@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Shop</h1>
+        <nav>
+            <ul>
+                <li><a href="#catalog">Каталог</a></li>
+                <li><a href="#orders">Заказы</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="catalog">
+            <h2>Каталог</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Код товара</th>
+                        <th>Название товара</th>
+                        <th>Цена</th>
+                        <th>Количество</th>
+                    </tr>
+                </thead>
+                <tbody id="catalog-body">
+                </tbody>
+            </table>
+        </section>
+        <section id="orders">
+            <h2>Заказы</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Код заказа</th>
+                        <th>Код клиента</th>
+                        <th>Дата заказа</th>
+                        <th>Общая стоимость</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-body">
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
