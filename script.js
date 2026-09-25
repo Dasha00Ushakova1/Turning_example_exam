@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('db.db');
+const db = new sqlite3.Database('./db.db');
+
 function getCatalog() {
     db.all("SELECT * FROM Products", (err, rows) => {
         if (err) {
@@ -42,4 +43,5 @@ function getOrders() {
 
 getCatalog();
 getOrders();
+
 db.close();
