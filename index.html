@@ -46,56 +46,64 @@
             </table>
         </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/sqlite3@5.0.2/dist/sqlite3.min.js"></script>
     <script>
-        let db = new sqlite3.Database('./db.db', sqlite3.OPEN_READONLY);
+        // Создание базы данных IndexedDB
+        var db = indexedDB.open('mydb', 1);
+        db.onupgradeneeded = function(e) {
+            var store = db.transaction('mytable', 'readwrite').objectStore('mytable');
+            store.createIndex('key', 'key', { unique: true });
+        };
 
-       function getCatalog() {
-  db.all("SELECT * FROM Products", (err, rows) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    const catalogBody = document.getElementById('catalog-body');
-    rows.forEach((row) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.Product_Code}</td>
-        <td>${row.Product_Name}</td>
-        <td>${row.Price}</td>
-        <td>${row.Quantity}</td>
-      `;
-      catalogBody.appendChild(tr);
-    });
-  });
-}
+        // Получение данных из базы данных IndexedDB
+        function getCatalog() {
+            var transaction = db.transaction('mytable', 'readonly');
+            var store = transaction.objectStore('mytable');
+            var request = store.getAll();
+            request.onsuccess = function(e) {
+                var rows = request.result;
+                var catalogBody = document.getElementById('catalog-body');
+                rows.forEach((row) => {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.key}</td>
+                        <td>${row.value.Product_Name}</td>
+                        <td>${row.value.Price}</td>
+                        <td>${row.value.Quantity}</td>
+                    `;
+                    catalogBody.appendChild(tr);
+                });
+            };
+        }
 
-function getOrders() {
-  db.all("SELECT * FROM Orders", (err, rows) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    const ordersBody = document.getElementById('orders-body');
-    rows.forEach((row) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.Order_Code}</td>
-        <td>${row.Customer_Code}</td>
-        <td>${row.Order_Date}</td>
-        <td>${row.Total_Cost}</td>
-      `;
-      ordersBody.appendChild(tr);
-    });
-  });
-}
+        function getOrders() {
+            var transaction = db.transaction('mytable', 'readonly');
+            var store = transaction.objectStore('mytable');
+            var request = store.getAll();
+            request.onsuccess = function(e) {
+                var rows = request.result;
+                var ordersBody = document.getElementById('orders-body');
+                rows.forEach((row) => {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.key}</td>
+                        <td>${row.value.Customer_Code}</td>
+                        <td>${row.value.Order_Date}</td>
+                        <td>${row.value.Total_Cost}</td>
+                    `;
+                    ordersBody.appendChild(tr);
+                });
+            };
+        }
 
+        // Вызов функций для получения каталога и заказов
+        db.onsuccess = function(e) {
+            getCatalog();
+            getOrders();
+        };
 
-getCatalog();
-getOrders();
-
-db.close();
-
+        db.onerror = function(e) {
+            console.error(e);
+        };
     </script>
 </body>
 </html>
