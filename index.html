@@ -1,101 +1,88 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop</title>
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <header>
-        <h1>Turning shop12345</h1>
-        <nav>
-            <ul>
-                <li><a href="#catalog">Каталог</a></li>
-                <li><a href="#orders">Заказы</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="catalog">
-            <h2>Каталог</h2>
-            <table id="catalog-table">
-                <thead>
-                    <tr>
-                        <th>Код товара</th>
-                        <th>Название товара</th>
-                        <th>Цена</th>
-                        <th>Количество</th>
-                    </tr>
-                </thead>
-                <tbody id="catalog-body">
-                </tbody>
-            </table>
-        </section>
-        <section id="orders">
-            <h2>Заказы</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Код заказа</th>
-                        <th>Код клиента</th>
-                        <th>Дата заказа</th>
-                        <th>Общая стоимость</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-body">
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/sqlite3@5.0.2/dist/sqlite3.min.js"></script>
-    <script>
-        const sqlite3 = require('db.db').verbose();
-        let db = new sqlite3.Database('./db.db', sqlite3.OPEN_READONLY);
-
-        function getCatalog() {
-            db.all("SELECT * FROM Products", (err, rows) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                const catalogBody = document.getElementById('catalog-body');
-                rows.forEach((row) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.Product_Code}</td>
-                        <td>${row.Product_Name}</td>
-                        <td>${row.Price}</td>
-                        <td>${row.Quantity}</td>
-                    `;
-                    catalogBody.appendChild(tr);
-                });
-            });
+  <header>
+    <h1>Turning shop123456</h1>
+    <nav>
+      <ul>
+        <li><a href="#catalog">Каталог</a></li>
+        <li><a href="#orders">Заказы</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section id="catalog">
+      <h2>Каталог</h2>
+      <table id="catalog-table">
+        <thead>
+          <tr>
+            <th>Код товара</th>
+            <th>Название товара</th>
+            <th>Цена</th>
+            <th>Количество</th>
+          </tr>
+        </thead>
+        <tbody id="catalog-body">
+        </tbody>
+      </table>
+    </section>
+    <section id="orders">
+      <h2>Заказы</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Код заказа</th>
+            <th>Код клиента</th>
+            <th>Дата заказа</th>
+            <th>Общая стоимость</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body">
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/sqlite3@5.0.2/dist/sqlite3.min.js"></script>
+  <script>
+    const sqlite3 = require('sqlite3').verbose();
+    let db = new sqlite3.Database('./db.db', sqlite3.OPEN_READONLY);
+    function getCatalog() {
+      db.all("SELECT * FROM Products", (err, rows) => {
+        if (err) {
+          console.error(err);
+          return;
         }
-
-        function getOrders() {
-            db.all("SELECT * FROM Orders", (err, rows) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                const ordersBody = document.getElementById('orders-body');
-                rows.forEach((row) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.Order_Code}</td>
-                        <td>${row.Customer_Code}</td>
-                        <td>${row.Order_Date}</td>
-                        <td>${row.Total_Cost}</td>
-                    `;
-                    ordersBody.appendChild(tr);
-                });
-            });
+        const catalogBody = document.getElementById('catalog-body');
+        rows.forEach((row) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = ` <td>${row.Product_Code}</td> <td>${row.Product_Name}</td> <td>${row.Price}</td> <td>${row.Quantity}</td> `;
+          catalogBody.appendChild(tr);
+        });
+      });
+    }
+    function getOrders() {
+      db.all("SELECT * FROM Orders", (err, rows) => {
+        if (err) {
+          console.error(err);
+          return;
         }
-
-        getCatalog();
-        getOrders();
-        db.close();
-    </script>
+        const ordersBody = document.getElementById('orders-body');
+        rows.forEach((row) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = ` <td>${row.Order_Code}</td> <td>${row.Customer_Code}</td> <td>${row.Order_Date}</td> <td>${row.Total_Cost}</td> `;
+          ordersBody.appendChild(tr);
+        });
+      });
+    }
+    getCatalog();
+    getOrders();
+    db.close();
+  </script>
 </body>
 </html>
