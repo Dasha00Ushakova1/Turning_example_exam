@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>Turning shop12345678910</h1>
+        <h1>Turning shop1234567891011</h1>
         <nav>
             <ul>
                 <li><a href="#catalog">Каталог</a></li>
@@ -47,14 +47,12 @@
         </section>
     </main>
     <script>
-        // Создание базы данных IndexedDB
         var db = indexedDB.open('mydb', 1);
         db.onupgradeneeded = function(e) {
             var store = db.transaction('mytable', 'readwrite').objectStore('mytable');
             store.createIndex('key', 'key', { unique: true });
         };
 
-        // Получение данных из базы данных IndexedDB
         function getCatalog() {
             var transaction = db.transaction('mytable', 'readonly');
             var store = transaction.objectStore('mytable');
@@ -95,7 +93,6 @@
             };
         }
 
-        // Вызов функций для получения каталога и заказов
         db.onsuccess = function(e) {
             getCatalog();
             getOrders();
