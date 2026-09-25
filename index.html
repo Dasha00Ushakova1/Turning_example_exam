@@ -51,7 +51,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sqlite3@5.0.2/dist/sqlite3.min.js"></script>
     <script>
         const sqlite3 = require('sqlite3').verbose();
-        let db = new sqlite3.Database('./db.db', sqlite3.OPEN_READONLY);
+        let db = new sqlite3.Database('./SQLite (3).db', sqlite3.OPEN_READONLY);
 
         function getCatalog() {
             db.all("SELECT * FROM Products", (err, rows) => {
