@@ -2,92 +2,68 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>Просмотр базы данных</title>
+    <!-- Подключаем sql.js -->
+    <script src="sql-wasm.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Turning shop123456789101112</h1>
-        <nav>
-            <ul>
-                <li><a href="#catalog">Каталог</a></li>
-                <li><a href="#orders">Заказы</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="catalog">
-            <h2>Каталог</h2>
-            <table id="catalog-table">
-                <thead>
-                    <tr>
-                        <th>Код товара</th>
-                        <th>Название товара</th>
-                        <th>Цена</th>
-                        <th>Количество</th>
-                    </tr>
-                </thead>
-                <tbody id="catalog-body"></tbody>
-            </table>
-        </section>
-        <section id="orders">
-            <h2>Заказы</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Код заказа</th>
-                        <th>Код клиента</th>
-                        <th>Дата заказа</th>
-                        <th>Общая стоимость</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-body"></tbody>
-            </table>
-        </section>
-    </main>
+    <h1>Данные из db.db</h1>
+    <div id="output">Загрузка...</div>
+
     <script>
-        // Получаем данные из таблицы через API-запрос
-        function getCatalog() {
-            fetch('/api/products')
-                .then(response => response.json())
-                .then(data => {
-                    const catalogBody = document.getElementById('catalog-body');
-                    data.forEach((row) => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${row.Product_Code}</td>
-                            <td>${row.Product_Name}</td>
-                            <td>${row.Price}</td>
-                            <td>${row.Quantity}</td>
-                        `;
-                        catalogBody.appendChild(tr);
-                    });
-                })
-                .catch(error => console.error(error));
+        // Функция для отображения таблицы
+        function renderTable(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('output').innerText = 'Нет данных';
+                return;
+            }
+            const result = data[0]; // Берем результат первого запроса
+            const columns = result.columns;
+            const values = result.values;
+
+            let html = '<table border="1"><thead><tr>';
+            columns.forEach(col => html += `<th>${col}</th>`);
+            html += '</tr></thead><tbody>';
+            
+            values.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell}</td>`);
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('output').innerHTML = html;
         }
 
-        function getOrders() {
-            fetch('/api/orders')
-                .then(response => response.json())
-                .then(data => {
-                    const ordersBody = document.getElementById('orders-body');
-                    data.forEach((row) => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${row.Order_Code}</td>
-                            <td>${row.Customer_Code}</td>
-                            <td>${row.Order_Date}</td>
-                            <td>${row.Total_Cost}</td>
-                        `;
-                        ordersBody.appendChild(tr);
-                    });
-                })
-                .catch(error => console.error(error));
+        // Основная логика
+        async function init() {
+            // 1. Инициализируем библиотеку
+            const SQL = await initSqlJs({
+                // Указываем, где искать wasm-файл
+                locateFile: file => `./${file}` 
+            });
+
+            // 2. Скачиваем файл базы данных
+            try {
+                const response = await fetch('./db.db');
+                if (!response.ok) throw new Error('Файл db.db не найден');
+                const buffer = await response.arrayBuffer();
+                
+                // 3. Создаем базу данных в памяти из скачанного файла
+                const db = new SQL.Database(new Uint8Array(buffer));
+
+                // 4. Выполняем запрос (замените my_table на имя вашей таблицы)
+                const result = db.exec("SELECT * FROM my_table LIMIT 50");
+                
+                // 5. Показываем на странице
+                renderTable(result);
+
+            } catch (err) {
+                document.getElementById('output').innerText = 'Ошибка: ' + err.message;
+            }
         }
 
-        getCatalog();
-        getOrders();
+        // Запускаем все это
+        init();
     </script>
 </body>
 </html>
