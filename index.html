@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>Turning shop1234567</h1>
+        <h1>Turning shop12345678</h1>
         <nav>
             <ul>
                 <li><a href="#catalog">Каталог</a></li>
@@ -51,6 +51,7 @@
         const sqlite3 = require('sqlite3').verbose();
         let db = new sqlite3.Database('./db.db', sqlite3.OPEN_READONLY);
         
+        // Получаем каталог товаров
         function getCatalog() {
             db.all("SELECT * FROM Products", (err, rows) => {
                 if (err) {
@@ -71,6 +72,7 @@
             });
         }
         
+        // Получаем список заказов
         function getOrders() {
             db.all("SELECT * FROM Orders", (err, rows) => {
                 if (err) {
